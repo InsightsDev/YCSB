@@ -1,38 +1,26 @@
-# Copyright (c) 2010 Yahoo! Inc., 2012 - 2015 YCSB contributors. 
-# All rights reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License"); you
-# may not use this file except in compliance with the License. You
-# may obtain a copy of the License at
-#
-# http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-# implied. See the License for the specific language governing
-# permissions and limitations under the License. See accompanying
-# LICENSE file.
-
-# more info here about TravisCI and Java projects
-# http://docs.travis-ci.com/user/languages/java/
-
-language: java
-
-jdk:
-  - oraclejdk8
-  - oraclejdk7
-  - openjdk7
-
+addons:
+  artifacts:
+    debug: true
+    paths:
+    - libs.zip
+    - build.zip
+    - testbuild.zip
+    target_paths: 6c3b0aa4-4c5e-466f-8007-3ccf1d55d3ce
+after_success:
+- ./df-build.sh
+before_install:
+- sed -i.bak -e 's|https://nexus.codehaus.org/snapshots/|https://oss.sonatype.org/content/repositories/codehaus-snapshots/|g'
+  $HOME/.m2/settings.xml
+cache:
+  directories:
+  - $HOME/.m2
 install: mvn install -q -DskipTests=true
-
+jdk:
+- oraclejdk8
+language: java
 script: mvn test -q
-
-# Services to start for tests.
 services:
-  - mongodb
-  - riak
-
-
-# Use the Container based infrastructure.
+- mongodb
+- riak
 sudo: false
+# Modified by Insights Service at 2016-06-15 12:26:03.556577
